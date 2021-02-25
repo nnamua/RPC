@@ -199,6 +199,9 @@ class RPCClient extends EventEmitter {
         subid = subKey(message.evt, message.args);
       }
       
+      console.log("Received msg with subid: " + subid);
+      console.log("subscriptions:\n" + this._subscriptions);
+
       if (!this._subscriptions.has(subid)) {
         return;
       }
