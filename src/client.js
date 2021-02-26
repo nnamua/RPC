@@ -381,15 +381,13 @@ class RPCClient extends EventEmitter {
     return this.request(RPCCommands.SELECT_VOICE_CHANNEL, { channel_id: id, timeout, force });
   }
 
-  /** Returns the currently selected voice channel
-   * @param {Object} [options] Options
-   * @param {number} [options.timeout] Timeout for the command
-   * @param {boolean} [options.force] Force this move. This should only be done if you
-   * have explicit permission from the user.
-   * @returns {Promise}
+  /**
+   * Returns the currently selected voice channel
+   * @param {number} [timeout] Timeout request
+   * @returns {Promise<Channel>}
    */
-  getSelectedVoiceChannel({ timeout, force = false } = {}) {
-    return this.request(RPCCommands.GET_SELECTED_VOICE_CHANNEL, { timeout, force });
+  getSelectedVoiceChannel(timeout) {
+    return this.request(RPCCommands.GET_SELECTED_VOICE_CHANNEL, { timeout });
   }
 
   /**
