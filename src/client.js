@@ -195,6 +195,11 @@ class RPCClient extends EventEmitter {
       if (message.evt === "SPEAKING_STOP" || message.evt === "SPEAKING_START"){
         const args = { channel_id : message.data.channel_id }
         subid = subKey(message.evt, args);
+      } else if (message.evt === "VOICE_STATE_CREATE" || message.evt === "VOICE_STATE_DELETE"){
+        console.log("Message:");
+        console.log(message);
+        console.log("Subscriptions:");
+        console.log(this._subscriptions);
       } else {
         subid = subKey(message.evt, message.args);
       }
