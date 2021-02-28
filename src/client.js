@@ -174,9 +174,9 @@ class RPCClient extends EventEmitter {
    * @private
    */
   _onRpcMessage(message) {
-    console.log("-------------------------------------------------");
-    console.log("Message:");
-    console.log(message);
+    //console.log("-------------------------------------------------");
+    //console.log("Message:");
+    //console.log(message);
     if (message.cmd === RPCCommands.DISPATCH && message.evt === RPCEvents.READY) {
       if (message.data.user) {
         this.user = message.data.user;
@@ -199,13 +199,13 @@ class RPCClient extends EventEmitter {
         const args = { channel_id : message.data.channel_id }
         subid = subKey(message.evt, args);
       } else if (message.evt === "VOICE_STATE_CREATE" || message.evt === "VOICE_STATE_DELETE"){
-        console.log("Subscriptions:");
-        console.log(this._subscriptions);
+        //console.log("Subscriptions:");
+        //console.log(this._subscriptions);
       } else {
         subid = subKey(message.evt, message.args);
       }
       
-      console.log("-------------------------------------------------");
+      //console.log("-------------------------------------------------");
       //console.log("Received msg with subid: " + subid);
       //console.log("subscriptions:\n" + this._subscriptions);
 
@@ -680,11 +680,14 @@ class RPCClient extends EventEmitter {
    * @returns {Promise<Object>}
    */
   subscribe(event, args, callback) {
+    console.log("Subscribing...");
+    console.log({event, args, callback});
     if (!callback && typeof args === 'function') {
       callback = args;
       args = undefined;
     }
     return this.request(RPCCommands.SUBSCRIBE, args, event).then(() => {
+      console.log("Received answer from SUBSCRIBE request");
       const subid = subKey(event, args);
       this._subscriptions.set(subid, callback);
       return {
