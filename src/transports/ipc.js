@@ -152,7 +152,6 @@ class IPCTransport extends EventEmitter {
   }
 
   send(data, op = OPCodes.FRAME) {
-    console.log(`Sending: ${encode(op, data)}`);
     this.socket.write(encode(op, data));
   }
 
