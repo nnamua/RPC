@@ -174,7 +174,7 @@ class RPCClient extends EventEmitter {
    * @private
    */
   _onRpcMessage(message) {
-    console.log("message received");
+    //console.log("message received");
     if (message.cmd === RPCCommands.DISPATCH && message.evt === RPCEvents.READY) {
       if (message.data.user) {
         this.user = message.data.user;
@@ -197,20 +197,20 @@ class RPCClient extends EventEmitter {
         const args = { channel_id : message.data.channel_id }
         subid = subKey(message.evt, args);
       } else if (message.startsWith("VOICE_STATE_")){
-        console.log("Message:");
-        console.log(message);
+        //console.log("Message:");
+        //console.log(message);
         const args = { channel_id : message.data.channel_id }
         subid = subKey(message.evt, args);
       } else {
         subid = subKey(message.evt, message.args);
       }
 
-      
+      /*
       console.log("Subscriptions:");
       console.log(this._subscriptions);
       console.log("subid:");
       console.log(subid);
-      
+      */
 
       if (!this._subscriptions.has(subid)) {
         return;
