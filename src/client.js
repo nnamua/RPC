@@ -174,10 +174,6 @@ class RPCClient extends EventEmitter {
    * @private
    */
   _onRpcMessage(message) {
-    console.log("-------------------------------------------------");
-    console.log("_onRpcMessage:");
-    console.log(message);
-    console.log("-------------------------------------------------");
     if (message.cmd === RPCCommands.DISPATCH && message.evt === RPCEvents.READY) {
       if (message.data.user) {
         this.user = message.data.user;
@@ -200,15 +196,15 @@ class RPCClient extends EventEmitter {
         const args = { channel_id : message.data.channel_id }
         subid = subKey(message.evt, args);
       } else if (message.evt === "VOICE_STATE_CREATE" || message.evt === "VOICE_STATE_DELETE"){
-        //console.log("Subscriptions:");
-        //console.log(this._subscriptions);
+        subid = subKey(message.evt, message.args);
       } else {
         subid = subKey(message.evt, message.args);
       }
-      
-      //console.log("-------------------------------------------------");
-      //console.log("Received msg with subid: " + subid);
-      //console.log("subscriptions:\n" + this._subscriptions);
+
+      console.log("Subscriptions:");
+      console.log(this._subscriptions);
+      console.log("subid:");
+      console.log(subid);
 
       if (!this._subscriptions.has(subid)) {
         return;
@@ -681,12 +677,23 @@ class RPCClient extends EventEmitter {
    * @returns {Promise<Object>}
    */
   subscribe(event, args, callback) {
-    //console.log("Subscribing...");
-    //console.log({event, args, callback});
     if (!callback && typeof args === 'function') {
       callback = args;
       args = undefined;
     }
+    /*
+      Somehow subscriptions to VOICE_STATE_CREATE/UPDATE/DELETE dont get acknowledgment from the server,
+      even though the subscription is registered.
+    */
+    if (event.startsWith("VOICE_STATE")){
+      const subid = subKey(event, args);
+      this._subscriptions.set(subid, callback)
+      return {
+        unsubscribe: () => this.request(RPCCommands.UNSUBSCRIBE, args, event)
+          .then(() => this._subscriptions.delete(subid)),
+      }
+    }
+
     return this.request(RPCCommands.SUBSCRIBE, args, event).then(() => {
       const subid = subKey(event, args);
       this._subscriptions.set(subid, callback);
