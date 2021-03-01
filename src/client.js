@@ -201,10 +201,12 @@ class RPCClient extends EventEmitter {
         subid = subKey(message.evt, message.args);
       }
 
+      /*
       console.log("Subscriptions:");
       console.log(this._subscriptions);
       console.log("subid:");
       console.log(subid);
+      */
 
       if (!this._subscriptions.has(subid)) {
         return;
@@ -688,9 +690,12 @@ class RPCClient extends EventEmitter {
     if (event.startsWith("VOICE_STATE")){
       const subid = subKey(event, args);
       this._subscriptions.set(subid, callback)
+      this.request(RPCCommands.SUBSCRIBE, args, event);
       return {
-        unsubscribe: () => this.request(RPCCommands.UNSUBSCRIBE, args, event)
-          .then(() => this._subscriptions.delete(subid)),
+        unsubscribe: () => { 
+          this.request(RPCCommands.UNSUBSCRIBE, args, event);
+          this._subscriptions.delete(subid);
+        }
       }
     }
 
