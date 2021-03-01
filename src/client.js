@@ -196,20 +196,19 @@ class RPCClient extends EventEmitter {
         const args = { channel_id : message.data.channel_id }
         subid = subKey(message.evt, args);
       } else if (message.evt.startsWith("VOICE_STATE_")){
-        console.log("Message:");
-        console.log(message);
-        const args = { channel_id : message.data.channel_id }
-        subid = subKey(message.evt, args);
+        //console.log("Message:");
+        //console.log(message);
+        subid = message.evt;
       } else {
         subid = subKey(message.evt, message.args);
       }
 
-      
+      /*
       console.log("Subscriptions:");
       console.log(this._subscriptions);
       console.log("subid:");
       console.log(subid);
-      
+      */
 
       if (!this._subscriptions.has(subid)) {
         return;
@@ -691,7 +690,7 @@ class RPCClient extends EventEmitter {
       even though the subscription is registered.
     */
     if (event.startsWith("VOICE_STATE")){
-      const subid = subKey(event, args);
+      const subid = event;
       this._subscriptions.set(subid, callback)
       this.request(RPCCommands.SUBSCRIBE, args, event);
       return {
