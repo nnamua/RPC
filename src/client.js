@@ -174,6 +174,7 @@ class RPCClient extends EventEmitter {
    * @private
    */
   _onRpcMessage(message) {
+    console.log("message received");
     if (message.cmd === RPCCommands.DISPATCH && message.evt === RPCEvents.READY) {
       if (message.data.user) {
         this.user = message.data.user;
