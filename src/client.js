@@ -174,9 +174,10 @@ class RPCClient extends EventEmitter {
    * @private
    */
   _onRpcMessage(message) {
-    //console.log("-------------------------------------------------");
-    //console.log("Message:");
-    //console.log(message);
+    console.log("-------------------------------------------------");
+    console.log("_onRpcMessage:");
+    console.log(message);
+    console.log("-------------------------------------------------");
     if (message.cmd === RPCCommands.DISPATCH && message.evt === RPCEvents.READY) {
       if (message.data.user) {
         this.user = message.data.user;
@@ -680,14 +681,13 @@ class RPCClient extends EventEmitter {
    * @returns {Promise<Object>}
    */
   subscribe(event, args, callback) {
-    console.log("Subscribing...");
-    console.log({event, args, callback});
+    //console.log("Subscribing...");
+    //console.log({event, args, callback});
     if (!callback && typeof args === 'function') {
       callback = args;
       args = undefined;
     }
     return this.request(RPCCommands.SUBSCRIBE, args, event).then(() => {
-      console.log("Received answer from SUBSCRIBE request");
       const subid = subKey(event, args);
       this._subscriptions.set(subid, callback);
       return {
