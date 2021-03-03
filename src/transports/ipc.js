@@ -118,6 +118,8 @@ class IPCTransport extends EventEmitter {
     socket.pause();
     socket.on('readable', () => {
       decode(socket, ({ op, data }) => {
+        console.log("==============================\nReceived:")
+        console.log(data);
         switch (op) {
           case OPCodes.PING:
             this.send(data, OPCodes.PONG);
@@ -152,10 +154,9 @@ class IPCTransport extends EventEmitter {
   }
 
   send(data, op = OPCodes.FRAME) {
-    console.log("data: ");
+    console.log("==============================\nSend:");
     console.log(data);
-    //console.log("op:");
-    //console.log(op);
+    console.log(`op: ${op}`);
     this.socket.write(encode(op, data));
   }
 
