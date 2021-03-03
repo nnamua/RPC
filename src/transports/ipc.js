@@ -99,7 +99,7 @@ function decodePacket(packet, callback){
 
 function decode(socket, callback) {
   const packet = socket.read();
-  console.log(typeof packet);
+  console.log(Object.prototype.toString.call(packet));
 
   if (!packet) {
     return;
