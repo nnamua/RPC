@@ -73,6 +73,7 @@ const working = {
 
 function decode(socket, callback) {
   const packet = socket.read();
+  console.log(packet.toString());
   if (!packet) {
     return;
   }
@@ -118,8 +119,6 @@ class IPCTransport extends EventEmitter {
     socket.pause();
     socket.on('readable', () => {
       decode(socket, ({ op, data }) => {
-        console.log("==============================\nReceived:")
-        console.log(data);
         switch (op) {
           case OPCodes.PING:
             this.send(data, OPCodes.PONG);
