@@ -73,7 +73,7 @@ const working = {
 
 function decode(socket, callback) {
   const packet = socket.read();
-  console.log(packet.toString());
+  console.log(packet);
   if (!packet) {
     return;
   }
