@@ -73,7 +73,9 @@ const working = {
 
 function decode(socket, callback) {
   const packet = socket.read();
-  console.log(packet);
+  if (packet != null) console.log(packet.toString());
+  else console.log("null");
+
   if (!packet) {
     return;
   }
