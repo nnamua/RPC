@@ -161,6 +161,7 @@ class IPCTransport extends EventEmitter {
   }
 
   async close() {
+    console.log("closing ipc-transport..");
     return new Promise((r) => {
       this.once('close', r);
       this.send({}, OPCodes.CLOSE);
@@ -176,3 +177,7 @@ class IPCTransport extends EventEmitter {
 module.exports = IPCTransport;
 module.exports.encode = encode;
 module.exports.decode = decode;
+
+process.on('uncaughtException', function(err) {
+  console.log(err);
+});
