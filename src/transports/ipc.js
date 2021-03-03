@@ -71,15 +71,42 @@ const working = {
   op: undefined,
 };
 
+function decodePacket(packet, callback){
+  let { op } = working;
+  let raw;
+  const len;
+  if (working.full === '') {
+    op = working.op = packet.readInt32LE(0);
+    len = packet.readInt32LE(4);
+    raw = packet.slice(8, len + 8);
+  } else {
+    raw = packet.toString();
+  }
+
+  try {
+    const data = JSON.parse(working.full + raw);
+    callback({ op, data }); // eslint-disable-line callback-return
+    working.full = '';
+    working.op = undefined;
+  } catch (err) {
+    working.full += raw;
+  }
+
+  // check if there is data left in the packet
+  packet = packet.slice(len + 8);
+  if (packet.length() != 0) decodePacket(packet, callback);
+}
+
 function decode(socket, callback) {
   const packet = socket.read();
-  if (packet != null) console.log(packet.toString());
-  else console.log("null");
 
   if (!packet) {
     return;
   }
 
+  decodePacket(packet, callback);
+
+  /*
   let { op } = working;
   let raw;
   if (working.full === '') {
@@ -98,6 +125,7 @@ function decode(socket, callback) {
   } catch (err) {
     working.full += raw;
   }
+  */
 
   decode(socket, callback);
 }
