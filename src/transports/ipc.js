@@ -74,7 +74,7 @@ const working = {
 function decodePacket(packet, callback){
   let { op } = working;
   let raw;
-  const len;
+  var len;
   if (working.full === '') {
     op = working.op = packet.readInt32LE(0);
     len = packet.readInt32LE(4);
