@@ -94,12 +94,11 @@ function decodePacket(packet, callback){
 
   // check if there is data left in the packet
   packet = packet.slice(len + 8);
-  //if (packet.length() != 0) decodePacket(packet, callback);
+  if (packet.length != 0) decodePacket(packet, callback);
 }
 
 function decode(socket, callback) {
   const packet = socket.read();
-  console.log(Object.prototype.toString.call(packet));
 
   if (!packet) {
     return;
