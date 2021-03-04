@@ -104,29 +104,10 @@ function decode(socket, callback) {
     return;
   }
 
+  // decode every sub-packet
   decodePacket(packet, callback);
 
-  /*
-  let { op } = working;
-  let raw;
-  if (working.full === '') {
-    op = working.op = packet.readInt32LE(0);
-    const len = packet.readInt32LE(4);
-    raw = packet.slice(8, len + 8);
-  } else {
-    raw = packet.toString();
-  }
-
-  try {
-    const data = JSON.parse(working.full + raw);
-    callback({ op, data }); // eslint-disable-line callback-return
-    working.full = '';
-    working.op = undefined;
-  } catch (err) {
-    working.full += raw;
-  }
-  */
-
+  // continue reading packets
   decode(socket, callback);
 }
 
@@ -183,14 +164,10 @@ class IPCTransport extends EventEmitter {
   }
 
   send(data, op = OPCodes.FRAME) {
-    console.log("==============================\nSend:");
-    console.log(data);
-    console.log(`op: ${op}`);
     this.socket.write(encode(op, data));
   }
 
   async close() {
-    console.log("closing ipc-transport..");
     return new Promise((r) => {
       this.once('close', r);
       this.send({}, OPCodes.CLOSE);
@@ -206,7 +183,3 @@ class IPCTransport extends EventEmitter {
 module.exports = IPCTransport;
 module.exports.encode = encode;
 module.exports.decode = decode;
-
-process.on('uncaughtException', function(err) {
-  console.log(err);
-});

@@ -174,8 +174,8 @@ class RPCClient extends EventEmitter {
    * @private
    */
   _onRpcMessage(message) {
-    //console.log(message);
-    //console.log(this._subscriptions);
+    console.log(message);
+    console.log(this._subscriptions);
     if (message.cmd === RPCCommands.DISPATCH && message.evt === RPCEvents.READY) {
       if (message.data.user) {
         this.user = message.data.user;
@@ -197,10 +197,6 @@ class RPCClient extends EventEmitter {
       if (message.evt === "SPEAKING_STOP" || message.evt === "SPEAKING_START"){
         const args = { channel_id : message.data.channel_id }
         subid = subKey(message.evt, args);
-      } else if (message.evt.startsWith("VOICE_STATE_")){
-        //console.log("Message:");
-        //console.log(message);
-        subid = message.evt;
       } else {
         subid = subKey(message.evt, message.args);
       }
@@ -686,21 +682,6 @@ class RPCClient extends EventEmitter {
     if (!callback && typeof args === 'function') {
       callback = args;
       args = undefined;
-    }
-    /*
-      Somehow subscriptions to VOICE_STATE_CREATE/UPDATE/DELETE dont get acknowledgment from the server,
-      even though the subscription is registered.
-    */
-    if (event.startsWith("VOICE_STATE")){
-      const subid = event;
-      this._subscriptions.set(subid, callback)
-      this.request(RPCCommands.SUBSCRIBE, args, event);
-      return {
-        unsubscribe: () => { 
-          this.request(RPCCommands.UNSUBSCRIBE, args, event);
-          this._subscriptions.delete(subid);
-        }
-      }
     }
 
     return this.request(RPCCommands.SUBSCRIBE, args, event).then(() => {
